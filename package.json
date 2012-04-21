@@ -9,5 +9,10 @@
     },
     "devDependencies": {
     	"nodeunit": "x"
-    }
+    },
+    "repository" : {
+        "type": "git",
+        "url" : "http://github.com/abrkn/imdb.git"
+    },
+    "main" : "./imdb"
 }
