@@ -1,0 +1,15 @@
+Node module for querying IMDB.com
+
+Usage:
+
+// List the episodes of the second season of Seinfeld.
+var imdb = require('imdb');
+imdb.episodes('tt0098904', 2, function(err, episodes) {
+	console.log(episodes);	
+});
+
+Methods:
+
+title(id, callback)
+
+episodes(id, callback)

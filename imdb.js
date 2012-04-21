@@ -21,11 +21,7 @@ module.exports = {
 
 		var url = util.titleUrl(id);
 
-		console.log('Requesting', url, '...');
-
 		request(url, function(err, res, body) {
-			console.log('Request completed,', err, res.statusCode);
-
 			if (err) {
 				return callback(err);
 			}
@@ -39,6 +35,7 @@ module.exports = {
 			}
 
 			var title = {
+				id: id,
 				name: /itemprop=.name.>\s*([^<]+)/.exec(body)[1].trim()
 			};
 
@@ -72,13 +69,11 @@ module.exports = {
 			if (tvheader) {
 				_.extend(title, {
 					show: {
-						id: m[1],
-						name: m[2].trim()																	
+						id: tvheader[1],
+						name: tvheader[2].trim()																	
 					}
 				});
 			}
-
-			console.log('Title parsing complete', title);
 
 			callback(null, title);
 		});
@@ -99,11 +94,7 @@ module.exports = {
 
 		var url = util.titleUrl(id) + 'episodes/_ajax?season=' + season;
 
-		console.log('Requeating episodes from', url, '...');
-
 		request(url, function(err, res, body) {
-			console.log('Request completed,', err, res.statusCode);
-
 			if (err) {
 				return callback(err);
 			}
@@ -137,19 +128,22 @@ module.exports = {
 			};			
 
 			while (m = re.exec(body)) {
-				episodes.push({
+				var episode = {
 					number: parseInt(m[1]),
-					airdate: /Unknown/.test(m[2]) ? null : convertImdbDate(m[2].trim()),
 					id: m[3],
 					name: m[4].trim()
-				});
+				};
+
+				if (!/Unknown/.test(m[2])) {
+					episode.airdate = convertImdbDate(m[2].trim());
+				}
+
+				episodes.push(episode);
 			}
 
 			if (expectedEpisodes != episodes.length) {
 				return callback(new Error('expected ' + expectedEpisodes + ' and parsed ' + episodes.length));
 			}
-
-			console.log(episodes.length, 'episodes found');
 
 			callback(null, episodes);
 		});
