@@ -67,15 +67,17 @@ module.exports = {
 			var tvheader = /<h2\s+class=.tv_header.>\s*<a\s+href=.\/title\/(tt[^\/]+)\/.\s*>\s*([^<]+)<\/a>/.exec(body);
 
 			if (tvheader) {
-				_.extend(title, {
-					show: {
-						id: tvheader[1],
-						name: tvheader[2].trim()																	
-					}
-				});
+				title.show = {
+					id: tvheader[1],
+					name: tvheader[2].trim()																	
+				};
 			}
 
-			// Episode number?
+			// Season and episode number.
+			if (m = /<span\sclass=.nobr.>Season\s(\d+), Episode\s(\d+)\s*<\/span>\s*<\/h2/.exec(body)) {
+				title.season = parseInt(m[1]);
+				title.episode = parseInt(m[2]);
+			}
 
 			callback(null, title);
 		});
