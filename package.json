@@ -8,7 +8,8 @@
         "underscore" : "x"
     },
     "devDependencies": {
-    	"nodeunit": "x"
+    	"mocha" : "x",
+        "should" : "x"
     },
     "repository" : {
         "type": "git",

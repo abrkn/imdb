@@ -1,91 +1,91 @@
-var testCase = require('nodeunit').testCase;
+require('mocha');
 var imdb = require('../imdb');
 var _ = require('underscore');
+var should = require('should');
 
-module.exports = testCase({
-	'title': testCase({
-		'not found': function(test) {
-			imdb.title('tt94332211', function(err, title) {
-				test.ok(err);
-				test.ok(/not found/i.test(err.message));
-				test.ok(!title);
-				test.done();
+describe("title", function() {
+	it('not found', function(done) {
+		imdb.title('tt94332211', function(err, title) {
+			should.exist(err);
+			err.message.should.match(/not found/i);
+			should.not.exist(title);
+
+			done();
+		});
+	});
+
+	it('daily show', function(done) {
+		imdb.title('tt0115147', function(err, title) {
+			should.not.exist(err);
+
+			// Unable to use deep equal due to changing ratings, etc.
+			title.should.have.property('name');
+			title.name.should.equal("The Daily Show with Jon Stewart");
+			title.seasons.should.be.above(16);
+			title.rating.should.be.above(5).and.below(10);
+			title.votes.should.be.above(3000);
+			title.cover.should.match(/https?:\/{2}.+\.(jpg|png)/i);
+
+			done();
+		});
+	});
+
+	it('walrus (2011)', function(done) {
+		imdb.title('tt2069977', function(err, title) {
+			should.not.exist(err);
+
+			title.name.should.equal("Walrus");
+			should.not.exist(title.seasons);
+			should.not.exist(title.rating);
+			should.not.exist(title.rating);
+			should.not.exist(title.votes);
+			should.not.exist(title.cover);
+
+			done();
+		});
+	});
+});
+
+describe('episodes', function() {
+	it('wharehouse 13 s1', function(done) {
+		imdb.episodes('tt1132290', 1, function(err, episodes) {
+			should.not.exist(err);
+			should.exist(episodes);
+			episodes.should.have.property("length");
+			episodes.length.should.equal(12);
+
+			episodes[0].should.eql({
+				number: 1,
+				name: "Pilot",
+				airdate: "2009-07-07",
+				id: "tt1417762"
 			});
-		},
 
-		'daily show': function(test) {
-			imdb.title('tt0115147', function(err, title) {
-				test.ok(!err);
-
-				// Unable to use deep equal due to changing ratings, etc.
-				test.equal(title.name, "The Daily Show");
-				test.ok(title.seasons >= 17);
-				test.ok(title.rating > 5 && title.rating < 10);
-				test.ok(title.votes >= 3000);
-				test.ok(/https?:\/{2}.+\.(jpg|png)/i.test(title.cover));
-
-				test.done();
+			episodes[3].should.eql({
+				number: 4,
+				name: "Claudia",
+				airdate: "2009-07-28",
+				id: "tt1431669"
 			});
-		},
 
-		'walrus (2011)': function(test) {
-			imdb.title('tt2069977', function(err, title) {
-				test.ok(!err);
+			done();
+		});
+	});
 
-				test.equal(title.name, "Walrus");
-				test.ok(typeof title.seasons, 'undefined');
-				test.equal(typeof title.rating, 'undefined');
-				test.equal(typeof title.votes, 'undefined');
-				test.equal(typeof title.cover, 'undefined');
+	it('daily show s8', function(done) {
+		imdb.episodes('tt0115147', 8, function(err, episodes) {
+			should.not.exist(err);
+			should.exist(episodes);
+			episodes.should.have.property("length");
+			episodes.length.should.equal(161);
 
-				test.done();
-			});
-		},
-	}),
+			// This is a good episode to test because of escapable characters in the name.
+			episodes[41].number.should.equal(42);
+			episodes[41].name.should.equal("Re-Decision 2003: The California Recall");
+			episodes[41].airdate.should.equal("2003-10-07");
+			episodes[41].id.should.equal("tt1619334");
 
-	'episodes': testCase({
-		'wharehouse 13 s1': function(test) {
-			imdb.episodes('tt1132290', 1, function(err, episodes) {
-				test.ok(!err, err ? err.message : null);
-				console.log(err);
-				test.ok(_.isArray(episodes));
-				test.equal(episodes.length, 12);
-
-				test.deepEqual(episodes[0], 
-					{
-						number: 1,
-						name: "Pilot",
-						airdate: "2009-07-07",
-						id: "tt1417762"
-					}
-				);
-
-				test.deepEqual(episodes[3], {
-						number: 4,
-						name: "Claudia",
-						airdate: "2009-07-28",
-						id: "tt1431669"
-					}
-				);
-
-				test.done();
-			});
-		},
-
-		'daily show s8': function(test) {
-			imdb.episodes('tt0115147', 8, function(err, episodes) {
-				test.ok(_.isNull(err));
-				test.ok(_.isArray(episodes));
-				test.equal(episodes.length, 161);
-
-				// This is a good episode to test because of escapable characters in the name.
-				test.equal(episodes[41].number, 42);
-				test.equal(episodes[41].name, "Re-Decision 2003: The California Recall");
-				test.equal(episodes[41].airdate, "2003-10-07");
-				test.equal(episodes[41].id, "tt1619334");
-
-				test.done();
-			});
-		}
-	})
+			done();
+		});
+	});
 });

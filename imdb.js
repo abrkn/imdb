@@ -10,6 +10,8 @@ var util = {
 String.prototype.trim = function() { return this.replace(/^\s+|\s+$/g, ''); };
 
 module.exports = {
+	language: "en-US",
+
 	title: function(id, callback) {
 		if (_.isNull(callback)) {
 			throw new Error('callback not specified');
@@ -21,7 +23,7 @@ module.exports = {
 
 		var url = util.titleUrl(id);
 
-		request(url, function(err, res, body) {
+		request({ url: url, headers: { "Accept-Language": module.exports.language } }, function(err, res, body) {
 			if (err) {
 				return callback(err);
 			}
@@ -98,7 +100,7 @@ module.exports = {
 
 		var url = util.titleUrl(id) + 'episodes/_ajax?season=' + season;
 
-		request(url, function(err, res, body) {
+		request({ url: url, headers: { "Accept-Language": module.exports.language } }, function(err, res, body) {
 			if (err) {
 				return callback(err);
 			}
