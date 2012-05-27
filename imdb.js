@@ -9,6 +9,8 @@ var util = {
 
 String.prototype.trim = function() { return this.replace(/^\s+|\s+$/g, ''); };
 
+exports.timeout = 10 * 1000;
+
 module.exports = {
 	language: "en-US",
 
@@ -23,7 +25,7 @@ module.exports = {
 
 		var url = util.titleUrl(id);
 
-		request({ url: url, headers: { "Accept-Language": module.exports.language } }, function(err, res, body) {
+		request({ url: url, timeout: exports.timeout, headers: { "Accept-Language": module.exports.language } }, function(err, res, body) {
 			if (err) {
 				return callback(err);
 			}
@@ -100,7 +102,7 @@ module.exports = {
 
 		var url = util.titleUrl(id) + 'episodes/_ajax?season=' + season;
 
-		request({ url: url, headers: { "Accept-Language": module.exports.language } }, function(err, res, body) {
+		request({ url: url, timeout: exports.timeout, headers: { "Accept-Language": module.exports.language } }, function(err, res, body) {
 			if (err) {
 				return callback(err);
 			}
