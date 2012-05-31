@@ -1,5 +1,5 @@
 require('mocha');
-var imdb = require('../imdb');
+var imdb = require('../lib/imdb.js');
 var _ = require('underscore');
 var should = require('should');
 
@@ -25,6 +25,42 @@ describe("title", function() {
 			title.rating.should.be.above(5).and.below(10);
 			title.votes.should.be.above(3000);
 			title.cover.should.match(/https?:\/{2}.+\.(jpg|png)/i);
+
+			done();
+		});
+	});
+
+	it('reads synopsis', function(done) {
+		// Heroes (series)
+		imdb.title('tt0813715', function(err, title) {
+			should.not.exist(err);
+
+			title.should.have.property('synopsis');
+			title.synopsis.should.eql("They thought they were like everyone else... until they woke with incredible abilities.");
+
+			done();
+		});
+	});
+
+	it('reads synopsis (episode)', function(done) {
+		// Heroes (series)
+		imdb.title('tt1054841', function(err, title) {
+			should.not.exist(err);
+
+			title.should.have.property('synopsis');
+			title.synopsis.should.eql("At the behest of his new employers, Dr. Suresh travels to Haiti to treat a potential virus victim. The patient turns out to be a familiar face...");
+
+			done();
+		});
+	});
+
+	it('reads genres (episode)', function(done) {
+		// Heroes (series)
+		imdb.title('tt1054841', function(err, title) {
+			should.not.exist(err);
+
+			title.should.have.property('genres');
+			title.genres.should.eql([ "Drama", "Sci-Fi", "Thriller"]);
 
 			done();
 		});
