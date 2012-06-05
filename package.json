@@ -7,7 +7,9 @@
         "request": "x",
         "underscore" : "x",
         "htmlparser" : "x",
-        "soupselect" : "x"
+        "soupselect" : "x",
+        "validator" : "0.4.x",
+        "debug" : "x"
     },
     "devDependencies": {
     	"mocha" : "x",
