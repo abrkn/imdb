@@ -93,14 +93,14 @@ describe('episodes', function() {
 			episodes[0].should.eql({
 				number: 1,
 				name: "Pilot",
-				airdate: "2009-07-07",
+				airDate: "2009-07-07",
 				id: "tt1417762"
 			});
 
 			episodes[3].should.eql({
 				number: 4,
 				name: "Claudia",
-				airdate: "2009-07-28",
+				airDate: "2009-07-28",
 				id: "tt1431669"
 			});
 
@@ -118,7 +118,7 @@ describe('episodes', function() {
 			// This is a good episode to test because of escapable characters in the name.
 			episodes[41].number.should.equal(42);
 			episodes[41].name.should.equal("Re-Decision 2003: The California Recall");
-			episodes[41].airdate.should.equal("2003-10-07");
+			episodes[41].airDate.should.equal("2003-10-07");
 			episodes[41].id.should.equal("tt1619334");
 
 			done();
